@@ -13,7 +13,7 @@ The analsis flow is:
 Main Files
 ----------
 
-1) DE_one_disco.Rmd
+1) analysis/DE_one_disco.Rmd
 - Purpose: Runs DE workflow for Condition 1 (single tissue + single cell type).
 - Inputs:
   - disco_data/disco_combined_normalized.rds
@@ -26,7 +26,7 @@ Main Files
 - Output:
   - results_disco/marker_logs/<condition>_<iteration>_markers.csv
 
-2) DE_two_to_eight_disco.rmd
+2) analysis/DE_two_to_eight_disco.rmd
 - Purpose: Runs DE workflow for Conditions 2-8 (multi-celltype combinations with varying similarity/diversity).
 - Inputs:
   - disco_data/disco_combined_normalized.rds
@@ -39,7 +39,7 @@ Main Files
 - Output:
   - results_disco/marker_logs/<condition>_<iteration>_markers.csv
 
-3) scEnrichment.rmd
+3) analysis/scEnrichment.rmd
 - Purpose: Performs scEnrichment on DE marker outputs and evaluates annotation quality.
 - Inputs:
   - results_disco/marker_logs/*.csv
@@ -88,8 +88,6 @@ Data/Meta Files
 ---------------
 - CELL_TYPE_SUBSETS/celltype_subsets_graph_based.csv:
   Precomputed sampled subsets (group ids, node sets, mean correlation, number of cell types).
-- __MACOSX/*:
-  macOS archive metadata copies (not analytical source files).
 
 How This Connects to the Thesis Question
 ----------------------------------------
