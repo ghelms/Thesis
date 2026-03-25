@@ -37,9 +37,9 @@ Main workflow:
 
 Key files:
 - [part_1/overview.txt](part_1/overview.txt)
-- [part_1/DE_one_disco.Rmd](part_1/DE_one_disco.Rmd)
-- [part_1/DE_two_to_eight_disco.rmd](part_1/DE_two_to_eight_disco.rmd)
-- [part_1/scEnrichment.rmd](part_1/scEnrichment.rmd)
+- [part_1/analysis/DE_one_disco.Rmd](part_1/DE_one_disco.Rmd)
+- [part_1/analysis/DE_two_to_eight_disco.rmd](part_1/DE_two_to_eight_disco.rmd)
+- [part_1/analysis/scEnrichment.rmd](part_1/scEnrichment.rmd)
 - [part_1/CELL_TYPE_SUBSETS/Sampling.rmd](part_1/CELL_TYPE_SUBSETS/Sampling.rmd)
 
 ## Part 2 Summary
