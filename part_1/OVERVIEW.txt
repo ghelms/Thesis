@@ -1,0 +1,99 @@
+PART 1 OVERVIEW
+================
+
+Goal
+----
+Part 1 evaluates how increasing transcriptional homogeneity (or diversity) in cell-type groups affects downstream cell type annotation performance.
+The analsis flow is:
+1) Define/simulate group compositions with different similarity levels.
+2) Run differential expression (DE) for each condition/group.
+3) Use scEnrichment (CELLiD) on DE marker lists.
+4) Evaluate top-k matching performance against known labels.
+
+Main Files
+----------
+
+1) DE_one_disco.Rmd
+- Purpose: Runs DE workflow for Condition 1 (single tissue + single cell type).
+- Inputs:
+  - disco_data/disco_combined_normalized.rds
+  - disco_data/groups_conditions.csv (filtered to condition == 1)
+- Core steps:
+  - Subset Seurat object by one tissue-celltype pair per iteration.
+  - Cluster subset (adaptive resolution if only one cluster found).
+  - Find markers with FindAllMarkers.
+  - Save per-iteration marker logs.
+- Output:
+  - results_disco/marker_logs/<condition>_<iteration>_markers.csv
+
+2) DE_two_to_eight_disco.rmd
+- Purpose: Runs DE workflow for Conditions 2-8 (multi-celltype combinations with varying similarity/diversity).
+- Inputs:
+  - disco_data/disco_combined_normalized.rds
+  - disco_data/all_conditions.csv (filtered to condition != 1)
+- Core steps:
+  - Parse comma-separated tissue_cell combinations.
+  - Subset Seurat object to selected combinations.
+  - Set identities to tissue_cell and run FindAllMarkers.
+  - Save per-iteration marker logs.
+- Output:
+  - results_disco/marker_logs/<condition>_<iteration>_markers.csv
+
+3) scEnrichment.rmd
+- Purpose: Performs scEnrichment on DE marker outputs and evaluates annotation quality.
+- Inputs:
+  - results_disco/marker_logs/*.csv
+  - DISCOtmp/ref_geneset.rds (reference geneset)
+- Core steps:
+  - For each cluster, keep top genes by adjusted p-value.
+  - Run CELLiDEnrichment for each cluster.
+  - Save enrichment result files.
+  - Parse marker names and compare predicted vs true cell type.
+  - Compute metrics such as Top-1/Top-5 hit, rank_of_truth, reciprocal rank (RR), and soft_hit.
+  - Aggregate to results_disco/predictions_enrichments.csv and generate plots.
+- Outputs:
+  - results_disco/enrichment_logs/*_erichment.csv
+  - results_disco/predictions_enrichments.csv
+
+4) CELL_TYPE_SUBSETS/Sampling.rmd
+- Purpose: Builds graph-based cell-type subsets with different correlation/similarity regimes.
+- Inputs:
+  - dist_mat_celltypes.rds
+  - cell_type_graph.rds
+- Core steps:
+  - Convert distance matrix to weighted edge list and correlation measure.
+  - Define similarity bins (very similar -> highly diverse).
+  - Sample node subsets (ego-neighborhood/random strategies).
+  - Compute mean pairwise correlation for each sampled subset.
+  - Export sampled subsets for condition construction.
+- Output:
+  - CELL_TYPE_SUBSETS/celltype_subsets_graph_based.csv
+
+5) functions/FUNCTION_load_and_sample_disco_atlas.R
+- Purpose: Utility to load a .h5ad atlas and create a downsampled Seurat .rds object.
+- Function:
+  - sample_h5ad_to_rds(filename, samples = 20000, output_rds = NULL, seed = 123)
+- Key behavior:
+  - Reads matrix with BPCells, metadata via hdf5r.
+  - Samples cells, writes subset matrix to disk, constructs Seurat object, saves .rds.
+
+6) functions/cleanup_function.R
+- Purpose: Utility to remove temporary files generated during BPCells/Seurat processing.
+- Function:
+  - cleanup_tmp_files(Verbose = FALSE)
+- Key behavior:
+  - Iterates through tempdir() recursively and removes files/folders with safe error handling.
+
+Data/Meta Files
+---------------
+- CELL_TYPE_SUBSETS/celltype_subsets_graph_based.csv:
+  Precomputed sampled subsets (group ids, node sets, mean correlation, number of cell types).
+- __MACOSX/*:
+  macOS archive metadata copies (not analytical source files).
+
+How This Connects to the Thesis Question
+----------------------------------------
+- Sampling.rmd defines group structures spanning different homogeneity/diversity levels.
+- DE notebooks convert each condition/group into marker gene sets.
+- scEnrichment.rmd measures whether true cell types are recovered from those markers.
+- Final metrics/plots quantify how annotation quality changes with group homogeneity.
