@@ -1,8 +1,8 @@
-This is the code used for Anton and Gustavs speciale
+This is the code used for the Master's thesis "Cell Type Annotation in Transcriptionally Homogeneous Single-Cell Data: An Evaluation of Differential Expression Analysis and Advanced Embedding Methods" by Anton Wang and Gustav Helms (2025). The Thesis was supervised by Ole Winther (University of Copenhagen) and Alexander Valentin (Novo Nordisk). 
 
 ### Cell Type Annotation in Transcriptionally Homogeneous Single-Cell Data
 #### An Evaltion of Differential Expression Analysis and Advanced Embedding Methods
-![Alt text](ag_speciale_frontpage.png)
+![Alt text](presentations/ag_speciale_frontpage.png)
 
-The code for part one of the thesis can be found in part_1/ and part two in part_2/
+
 
