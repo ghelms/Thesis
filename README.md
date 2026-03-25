@@ -1,23 +1,86 @@
-### Cell Type Annotation in Transcriptionally Homogeneous Single-Cell Data
-#### An Evaluation of Differential Expression Analysis and Advanced Embedding Methods
+# Cell Type Annotation in Transcriptionally Homogeneous Single-Cell Data
+## An Evaluation of Differential Expression Analysis and Advanced Embedding Methods
 
-This repo contains the code used for the Master's thesis "Cell Type Annotation in Transcriptionally Homogeneous Single-Cell Data: An Evaluation of Differential Expression Analysis and Advanced Embedding Methods" by Anton Wang and Gustav Helms (2025). The Thesis was supervised by Ole Winther (University of Copenhagen) and Alexander Valentin (Novo Nordisk). 
-\\
-Below is an overview of the structure of the repository and the contents of each folder. Within the two code folders, there are OVERVIEW files that provide detailed instructions on how to run the code and reproduce the analyses presented in the thesis.
+This repository contains the code used for the Master's thesis:
+Cell Type Annotation in Transcriptionally Homogeneous Single-Cell Data: An Evaluation of Differential Expression Analysis and Advanced Embedding Methods (2025), by Anton Wang and Gustav Helms.
 
-#### Overview of the Repository
-- 'part_1': Contains code and analysis for the evaluation of how transcriptanly homogenous samples inflfluence the performance of cell type annotation methods. 
-- 'part_2': Contains code for the analysis of advanced embedding methods for cell type representation and annotation. 
-- 'presentations/': Contains presentation figures and code for creating them. 
-- 'PAPER.pdf': Contains the final thesis report.
-- 'SLIDES.pdf': Contains the slides for the final presentation of the thesis.
+Supervisors:
+- Ole Winther (University of Copenhagen)
+- Alexander Valentin (Novo Nordisk)
 
-![Alt text](presentations/ag_speciale_frontpage.png)
+## Repository Overview
 
+- [part_1](part_1): Differential-expression-based analysis of cell type annotation under varying transcriptional homogeneity.
+- [part_2](part_2): Representation learning analysis using HVG/PCA/VAE/VAE+diffusion embeddings.
+- [presentations](presentations): Figures, slide assets, and presentation-related plotting code.
+- PAPER.pdf: Final thesis report.
+- SLIDES.pdf: Final thesis presentation.
 
-##### Abstract
+![Front page image](presentations/ag_speciale_frontpage.png)
 
-Single-cell RNA sequencing (scRNA-seq) has become an integrated part of quality control in stem cell research, but standard differential expression (DE) analysis may fail to distinguish closely related cell types in transcriptionally homogeneous samples. This thesis addresses two questions: (1) How does transcriptional homogeneity affect DE-based cell type identification? (2) Can alternative embedding methods improve discrimination in homogeneous settings? In Part 1 of this thesis, we examine the effect of increasing transcriptional homogeneity on differential expression analysis. By subsetting a large cell atlas into smaller groups of varying homogeneity based on
-average Pearson correlation between cell types, we confirmed that DE analysis performance degrades substantially in homogeneous samples. These findings motivated Part 2, where we investigate whether alternative embedding methods can improve cell type discrimination in such challenging settings. In Part 2, we compared four data representations: highly variable genes (HVG) from log-normalized counts, principal component analysis (PCA) embeddings, variational autoencoder (VAE) latent embeddings, and VAE embeddings refined by latent diffusion model (LDM) denoising. Performance was evaluated using cell-type Local Inverse Simpson Index (cLISI) scores and label transfer accuracy via multinomial logistic regression. Contrary to expectations, PCA consistently performed similar or better than the more complex methods, with LDM providing minimal to no improvement over VAE, across both homogeneous and heterogeneous settings. These results suggest that improved representation learning alone is insufficient to overcome limitations in cell type discrimination, highlighting the role of annotation practices, evaluation frameworks and the lack of biological context in current modeling framework.
+## Scientific Scope
 
+The thesis addresses two main questions:
 
+1. How does transcriptional homogeneity influence differential-expression-based cell type identification?
+2. Can advanced learned embeddings improve discrimination in homogeneous settings?
+
+## Part 1 Summary
+
+Part 1 builds groups of tissue-celltype combinations spanning increasing similarity/diversity and evaluates how this affects marker-based annotation.
+
+Main workflow:
+1. Sample or construct group definitions with controlled similarity levels.
+2. Run differential expression per condition and iteration.
+3. Run scEnrichment (CELLiD) on marker lists.
+4. Evaluate top-k matching and rank-based metrics.
+
+Key files:
+- [part_1/overview.txt](part_1/overview.txt)
+- [part_1/DE_one_disco.Rmd](part_1/DE_one_disco.Rmd)
+- [part_1/DE_two_to_eight_disco.rmd](part_1/DE_two_to_eight_disco.rmd)
+- [part_1/scEnrichment.rmd](part_1/scEnrichment.rmd)
+- [part_1/CELL_TYPE_SUBSETS/Sampling.rmd](part_1/CELL_TYPE_SUBSETS/Sampling.rmd)
+
+## Part 2 Summary
+
+Part 2 benchmarks multiple representations for downstream cell type annotation quality:
+- HVG (log-normalized feature baseline)
+- PCA embeddings
+- VAE latent embeddings
+- Diffusion-denoised VAE latents
+
+Main workflow:
+1. Split data into train/validation/test.
+2. Train VAE and extract latent spaces.
+3. Train diffusion denoiser in latent space.
+4. Generate denoised embeddings for multiple denoising step counts.
+5. Evaluate cLISI and label transfer performance.
+6. Aggregate and visualize grid-search and evaluation outputs.
+
+Key files:
+- [part_2/OVERVIEW.txt](part_2/OVERVIEW.txt)
+- [part_2/src/pipeline.py](part_2/src/pipeline.py)
+- [part_2/experiments/run_grid_search.py](part_2/experiments/run_grid_search.py)
+- [part_2/experiments/evaluate_label_tranfer.py](part_2/experiments/evaluate_label_tranfer.py)
+- [part_2/experiments/plot_results.py](part_2/experiments/plot_results.py)
+- [part_2/experiments/plot_label_transfer.py](part_2/experiments/plot_label_transfer.py)
+
+## Expected Outputs
+
+Part 1 produces:
+- Differential expression marker logs.
+- scEnrichment logs.
+- Aggregated prediction/evaluation tables and plots.
+
+Part 2 produces:
+- Grid-search result tables.
+- Consolidated train/validation/test AnnData files with embeddings.
+- Label transfer evaluation tables.
+- Plot artifacts for cLISI and label transfer comparisons.
+- Cached model checkpoints and latent arrays.
+
+## Notes
+
+- The project includes some legacy and intermediate analysis files from iterative development.
+- The most practical entry points are the OVERVIEW files in each part folder and the experiment scripts in [part_2/experiments](part_2/experiments).
